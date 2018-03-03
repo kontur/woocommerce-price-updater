@@ -1,7 +1,40 @@
-#woocommerce-price-bulk-updater-values fieldset {
-    display: inline-block;
-}
 #woocommerce-price-bulk-updater-warning {
     display: block;
     margin: 1rem 0;
+}
+
+#woocommerce-price-bulk-updater-values fieldset {
+    border: 1px solid lightgrey;
+    display: block;
+    padding: 0.5rem 1rem;
+    margin: 1rem 0;
+}
+
+.woocommerce-price-bulk-updater-row {
+    display: block;
+}
+
+#woocommerce-price-bulk-updater-values label>span {
+    display: inline-block;
+    min-width: 10rem;
+}
+
+#woocommerce-price-bulk-updater-values em {
+    color: grey;
+    margin-left: 1rem;
+}
+
+#woocommerce-price-bulk-updater-values .woocommerce-price-bulk-updater-disabled em {
+    color: lightgrey;
+}
+
+.woocommerce-price-bulk-updater-disabled span {
+    color: grey;
+}
+
+#woocommerce-price-bulk-updater-values input[type="text"][disabled] {
+    border: 1px solid lightgrey;
+}
+#woocommerce-price-bulk-updater-values input[type="text"] {
+    border: 1px solid limegreen;
 }

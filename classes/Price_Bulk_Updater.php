@@ -50,6 +50,7 @@ class Price_Bulk_Updater {
             return;
         }
         wp_enqueue_style('price-bulk-updater-styles', $this->assets_url . 'price-bulk-updater-styles.css');
+        wp_enqueue_script('price-bulk-updater-script', $this->assets_url . 'price-bulk-updater-script.js', array('jquery'), true, true);
     }
 
     /**
