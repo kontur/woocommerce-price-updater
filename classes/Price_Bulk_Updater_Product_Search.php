@@ -3,7 +3,6 @@
  * Searching for WooCommerce products matching certian params
  */
 class Price_Bulk_Updater_Product_Search {
-
     /**
      * Allowed search params and their default values
      *
@@ -51,8 +50,27 @@ class Price_Bulk_Updater_Product_Search {
      *
      * @return array
      */
-    public function results() {
+    public function results($require_one_of = false) {
         global $wpdb;
+
+        // optionally require at least one of the params passed in to be set
+        if (!empty($require_one_of) && is_array($require_one_of)) {
+            // filter the required keys to contain only those that are set in options and are not the default value
+            $required_set = array_filter($require_one_of, function ($required) {
+                // var_dump($required, 
+                //     isset($this->options[$required]), 
+                //     $this->options[$required] !== self::$defaults[$required],
+                //     $this->options[$required],
+                //     self::$defaults[$params]
+                // );
+                return isset($this->options[$required]) && $this->options[$required] !== self::$defaults[$required];
+            });
+
+            // return empty array if none of the required keys was different from the defaults
+            if (0 === sizeof($required_set)) {
+                return array();
+            }
+        }
 
         $searches = array();
 
@@ -81,8 +99,11 @@ class Price_Bulk_Updater_Product_Search {
 
         $sql = $wpdb->prepare(
             "
-                SELECT ID, post_title, meta_value, meta_key FROM wp_posts p 
-                LEFT JOIN wp_postmeta m
+                SELECT ID, post_title, post_status,
+                (SELECT meta_value FROM wp_postmeta WHERE post_id = p.ID AND meta_key = '_regular_price') AS price,
+                (SELECT meta_value FROM wp_postmeta WHERE post_id = p.ID AND meta_key = '_sale_price') AS sale
+                FROM wp_posts p 
+                INNER JOIN wp_postmeta m
                 ON p.ID = m.post_id
                 WHERE p.post_type = 'product' AND p.post_status = 'publish'
                 AND (" . $filters . ')

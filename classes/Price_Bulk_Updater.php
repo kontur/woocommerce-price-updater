@@ -75,8 +75,8 @@ class Price_Bulk_Updater {
                 }
             }
             
-            $search = new Price_Bulk_Updater_Product_Search(array("foO"));
-            echo json_encode($search->results());
+            $search = new Price_Bulk_Updater_Product_Search($params);
+            echo json_encode($search->results(array("price", "sale", "search")));
         }
         
         wp_die();
