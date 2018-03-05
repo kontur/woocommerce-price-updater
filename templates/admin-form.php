@@ -14,7 +14,7 @@
 						<input type="checkbox">
 						<span>Current price</span>
 					</label>
-					<input name="current_price" data-param="price" type="text" disabled>
+					<input name="price" type="text" disabled>
 					<em>Allowed is numeric input (9 or 9.99) or empty value to match products with no price.</em>
 				</div>
 				<div class="woocommerce-price-bulk-updater-row woocommerce-price-bulk-updater-disabled">
@@ -22,7 +22,7 @@
 						<input type="checkbox">
 						<span>Current sales price</span>
 					</label>
-					<input name="current_sale" data-param="sale" type="text" disabled>
+					<input name="sale" type="text" disabled>
 					<em>Allowed is numeric input (9 or 9.99) or empty value to match products with no sales price.</em>
 				</div>
 				<div class="woocommerce-price-bulk-updater-row woocommerce-price-bulk-updater-disabled">
@@ -30,7 +30,7 @@
 						<input type="checkbox">
 						<span>Product name contains</span>
 					</label>
-					<input name="product_name" data-param="search" type="text" disabled>
+					<input name="search" type="text" disabled>
 					<em>Allowed is alphanumeric input, empty value will be ignored.</em>
 				</div>
 				<div id="woocommerce-price-bulk-updater-matches-wrapper" class="multiple">

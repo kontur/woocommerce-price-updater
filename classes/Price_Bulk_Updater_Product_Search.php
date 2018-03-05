@@ -57,12 +57,6 @@ class Price_Bulk_Updater_Product_Search {
         if (!empty($require_one_of) && is_array($require_one_of)) {
             // filter the required keys to contain only those that are set in options and are not the default value
             $required_set = array_filter($require_one_of, function ($required) {
-                // var_dump($required, 
-                //     isset($this->options[$required]), 
-                //     $this->options[$required] !== self::$defaults[$required],
-                //     $this->options[$required],
-                //     self::$defaults[$params]
-                // );
                 return isset($this->options[$required]) && $this->options[$required] !== self::$defaults[$required];
             });
 

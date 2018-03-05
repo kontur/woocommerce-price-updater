@@ -16,9 +16,9 @@
         $fieldsMatch = $("#woocommerce-price-bulk-updater-match"),
         $fieldsPrices = $("#woocommerce-price-bulk-updater-prices"),
 
-        $inputPrice = $("input[name='current_price']"),
-        $inputSale = $("input[name='current_sale']"),
-        $inputSearch = $("input[name='product_name']"),
+        $inputPrice = $("input[name='price']"),
+        $inputSale = $("input[name='sale']"),
+        $inputSearch = $("input[name='search']"),
         $inputNewPrice = $("input[name='new_price']"),
         $inputNewSale = $("input[name='new_sale']"),
 
@@ -96,7 +96,7 @@
 
         $.each([$inputPrice, $inputSale, $inputSearch], function(index, $input) {
             if (!$input.is(":disabled")) {
-                data[$input.data("param")] = $input.val()
+                data[$input.attr("name")] = $input.val()
             }
         })
 
@@ -105,6 +105,7 @@
         }
 
         $.post(ajaxurl, data, updateMatches)
+        checkSubmitAllowed()
     }
 
     /**
