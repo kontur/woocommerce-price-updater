@@ -12,6 +12,7 @@
         rowSelector = ".woocommerce-price-bulk-updater-row",
         disableClass = "woocommerce-price-bulk-updater-disabled",
         matchesClass = "has-matches",
+        hiddenClass = "hidden-initially",
 
         $fieldsMatch = $("#woocommerce-price-bulk-updater-match"),
         $fieldsPrices = $("#woocommerce-price-bulk-updater-prices"),
@@ -86,7 +87,8 @@
         }
 
         $matches.removeClass(matchesClass).children().remove()
-        $matchesWrapper.find("code").addClass("loading").html("&nbsp;")
+        $matchesWrapper.removeClass(hiddenClass)
+            .find("code").addClass("loading").html("&nbsp;")
         $submit.attr("disabled", "disabled")
 
         var data = {

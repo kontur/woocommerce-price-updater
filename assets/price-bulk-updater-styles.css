@@ -7,6 +7,10 @@
     color: #ee3300;
 }
 
+#woocommerce-price-bulk-updater {
+    margin-right: 1rem;
+}
+
 #woocommerce-price-bulk-updater #submit[disabled] {
     background: lightgrey;
 }
@@ -46,6 +50,15 @@
 
 #woocommerce-price-bulk-updater-values input[type="text"] {
     border: 1px solid limegreen;
+}
+
+#woocommerce-price-bulk-updater-matches-wrapper {
+    transition: opacity 0.2s ease-out;
+    opacity: 1;
+}
+
+#woocommerce-price-bulk-updater-matches-wrapper.hidden-initially {
+    opacity: 0;
 }
 
 #woocommerce-price-bulk-updater-matches-wrapper code {
