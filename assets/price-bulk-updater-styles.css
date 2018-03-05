@@ -3,6 +3,10 @@
     margin: 1rem 0;
 }
 
+#woocommerce-price-bulk-updater-warning span {
+    color: #ee3300;
+}
+
 #woocommerce-price-bulk-updater #submit[disabled] {
     background: lightgrey;
 }
@@ -145,4 +149,14 @@
     100% {
         transform: rotate(360deg) translateX(0px);
     }
+}
+
+.woocommerce-price-bulk-updater-input-warning {
+    color: #ee3300;
+    display: block;
+    margin-left: 1.5rem;
+}
+
+.woocommerce-price-bulk-updater-disabled .woocommerce-price-bulk-updater-input-warning {
+    display: none;
 }
