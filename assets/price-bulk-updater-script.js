@@ -1,5 +1,12 @@
+/**
+ * Encapuslated interface interactions and AJAX handling for the Price Bulk Updater
+ */
 (function($) {
 
+    /** 
+     * Declare all recuring variables only once, including $-prefixed jQuery
+     * collections
+     */
     var $element = $("#woocommerce-price-bulk-updater"),
 
         rowSelector = ".woocommerce-price-bulk-updater-row",
@@ -19,9 +26,10 @@
         $matchesWrapper = $("#woocommerce-price-bulk-updater-matches-wrapper"),
         $submit = $("#submit")
 
-    // on load remove all possibly selected values
+    // on init remove all possibly selected values
     $element.find("input[type='checkbox']:checked").removeAttr("checked")
     $element.find("input[type='text']").attr("disabled", "disabled").attr("value", "")
+    checkSubmitAllowed()
 
     /**
      * Register event listeners
@@ -39,6 +47,9 @@
     $fieldsMatch.on("change keyup", "input", getMatches)
 
 
+    /**
+     * Callback to enable or disable a row with inputs
+     */
     function toggleDisableRow() {
         var checked = $(this).is(":checked"),
             $row = $(this).closest(rowSelector),
@@ -54,6 +65,12 @@
         checkSubmitAllowed()
     }
 
+    /**
+     * Serialize the current form data and fetch a list of matched products
+     * which will be affected by the submit
+     * 
+     * @param event event 
+     */
     function getMatches(event) {
         if (event) {
             // if update was triggered by click on a checkbox first update the row status
@@ -90,6 +107,11 @@
         $.post(ajaxurl, data, updateMatches)
     }
 
+    /**
+     * Callback to handle the JSON string result containing an array of matches
+     * 
+     * @param string(JSON) result 
+     */
     function updateMatches(result) {
         if (result) {
             $matches.children().remove()
@@ -117,11 +139,20 @@
         }
     }
 
+    /**
+     * Update the match counter
+     * 
+     * @param int num 
+     */
     function setTotalMatches(num) {
+        num = parseInt(num)
         $matchesWrapper.removeClass("single multiple").addClass(num !== 1 ? "multiple" : "single")
             .find("code").removeClass("loading").html(num)
     }
 
+    /**
+     * Callback to transform number input to valid floats
+     */
     function formatNumber() {
         var val = $(this).val()
 
@@ -135,6 +166,11 @@
         $(this).attr("value", val)
     }
 
+    /** 
+     * Check if enough info is provided to allow a submit. Validation is performed
+     * server side as well, but this is a bare minimum sanity check we have some
+     * data to work with
+     */
     function checkSubmitAllowed() {
         if ($fieldsMatch.has("input:checked").length > 0 && $fieldsPrices.has("input:checked").length > 0) {
             $submit.removeAttr("disabled")
