@@ -1,20 +1,30 @@
 (function($) {
 
     var $element = $("#woocommerce-price-bulk-updater"),
+
         rowSelector = ".woocommerce-price-bulk-updater-row",
         disableClass = "woocommerce-price-bulk-updater-disabled",
         matchesClass = "has-matches",
+
         $fieldsMatch = $("#woocommerce-price-bulk-updater-match"),
         $fieldsPrices = $("#woocommerce-price-bulk-updater-prices"),
+
         $inputPrice = $("input[name='current_price']"),
-        $inputSale = $("input[name='current_sales_price']"),
+        $inputSale = $("input[name='current_sale']"),
         $inputSearch = $("input[name='product_name']"),
+        $inputNewPrice = $("input[name='new_price']"),
+        $inputNewSale = $("input[name='new_sale']"),
+
         $matches = $("#woocommerce-price-bulk-updater-matches"),
         $matchesWrapper = $("#woocommerce-price-bulk-updater-matches-wrapper"),
         $submit = $("#submit")
 
     // enable price rows when checkbox clicked
     $fieldsPrices.on("change", "input[type='checkbox']", toggleDisableRow)
+
+    $.each([$inputPrice, $inputSale, $inputNewPrice, $inputNewSale], function(index, $input) {
+        $input.on("change keyup", formatNumber)
+    })
 
     $element.find("input[type='checkbox']:checked").removeAttr("checked")
     $element.find("input[type='text']").attr("disabled", "disabled").attr("value", "")
@@ -99,9 +109,22 @@
         }
     }
 
-    function setTotalMatches (num) {
+    function setTotalMatches(num) {
         $matchesWrapper.removeClass("single multiple").addClass(num !== 1 ? "multiple" : "single")
             .find("code").removeClass("loading").html(num)
+    }
+
+    function formatNumber() {
+        var val = $(this).val()
+
+        // only allow single . as decimal separator
+        val = val.replace(/[,;:]|\.{2,}/gi, ".")
+
+        // everything (including whitespace within or around) that's not a 
+        // digit or a . gets tossed
+        val = val.replace(/[^\d\.]/gi, "")
+
+        $(this).attr("value", val)
     }
 
 })(jQuery)

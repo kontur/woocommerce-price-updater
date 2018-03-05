@@ -22,7 +22,7 @@
 						<input type="checkbox">
 						<span>Current sales price</span>
 					</label>
-					<input name="current_sales_price" data-param="sale" type="text" disabled>
+					<input name="current_sale" data-param="sale" type="text" disabled>
 					<em>Allowed is numeric input (9 or 9.99) or empty value to match products with no sales price.</em>
 				</div>
 				<div class="woocommerce-price-bulk-updater-row woocommerce-price-bulk-updater-disabled">
@@ -45,7 +45,7 @@
 						<input type="checkbox">
 						<span>Set price</span>
 					</label>
-					<input name="new" type="text" disabled>
+					<input name="new_price" type="text" disabled>
 					<em>Allowed is numeric input (9 or 9.99) or empty value to remove prices from matched products.</em>
 				</div>
 				<div class="woocommerce-price-bulk-updater-row woocommerce-price-bulk-updater-disabled">
@@ -53,7 +53,7 @@
 						<input type="checkbox">
 						<span>Set sales price</span>
 					</label>
-					<input name="new" type="text" disabled>
+					<input name="new_sale" type="text" disabled>
 					<em>Allowed is numeric input (9 or 9.99) or empty value to remove sales prices from matched products.</em>
 				</div>
 			</fieldset>
