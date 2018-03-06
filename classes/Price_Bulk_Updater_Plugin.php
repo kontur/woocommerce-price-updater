@@ -1,11 +1,11 @@
 <?php
 /**
- * Price_Bulk_Updater
+ * Price_Bulk_Updater_Plugin
  *
  * Main plugin class with hooks for rendering and reacting to changes in the
  * admin area
  */
-class Price_Bulk_Updater {
+class Price_Bulk_Updater_Plugin {
     private static $price_keys = array('_regular_price', '_sale_price');
 
     public function __construct() {
@@ -91,9 +91,8 @@ class Price_Bulk_Updater {
      */
     public function hook_plugins_loaded() {
         if (!defined('WC_VERSION')) {
-            // no woocommerce :(
             if (is_admin()) {
-                // TODO show warning
+                add_action('admin_notices', array($this, 'admin_notice_no_woocommerce'));
             }
         }
     }
@@ -196,6 +195,7 @@ class Price_Bulk_Updater {
                 __('No products products matched, nothing updated.', PRICE_BULK_UPDATER_NAMESPACE),
                 'error'
             );
+
             return false;
         }
         $ids = array_map(function ($item) {
@@ -203,7 +203,6 @@ class Price_Bulk_Updater {
         }, $result);
 
         if (!empty($ids) && is_array($ids)) {
-
             foreach (self::$price_keys as $meta_key) {
                 if (isset($new[$meta_key])) {
                     $sql = $wpdb->prepare(
@@ -234,8 +233,9 @@ class Price_Bulk_Updater {
                 if (isset($updated[$key]) && false !== $updated[$key]) {
                     $this->notice(
                         sprintf(
-                            _n('Updated %d product to new %s ("%s").',
-                                'Updated %d products to new %s ("%s").', 
+                            _n(
+                                'Updated %d product to new %s ("%s").',
+                                'Updated %d products to new %s ("%s").',
                                 $updated[$key],
                                 PRICE_BULK_UPDATER_NAMESPACE
                             ),
@@ -258,7 +258,7 @@ class Price_Bulk_Updater {
      * @return boolean
      */
     private static function validatePriceInput($input) {
-        return is_string($input) && ( $input === '' || preg_match('/[^0-9\.]+/', $input) !== 1 );
+        return is_string($input) && ($input === '' || preg_match('/[^0-9\.]+/', $input) !== 1);
     }
 
     /**
@@ -267,7 +267,14 @@ class Price_Bulk_Updater {
      * @return void
      */
     public static function admin_notice_activate() {
-        $this->notice(__('WooCommerce Price Bulk Updater is now activated and available under the Products sidebar menu.', PRICE_BULK_UPDATER_NAMESPACE));
+        $this->notice(__('WooCommerce Price Bulk Updater is now activated and available under the WooCommerce Products sidebar menu.', PRICE_BULK_UPDATER_NAMESPACE));
+    }
+
+    public static function admin_notice_no_woocommerce() {
+        $this->notice(
+            __('WooCommerce Price Bulk Updater is activated but WooCommerce does not seem to be installed and activated.', PRICE_BULK_UPDATER_NAMESPACE),
+            'warning'
+        );
     }
 
     /**
