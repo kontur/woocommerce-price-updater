@@ -10,6 +10,7 @@ class Price_Bulk_Updater_Product_Search {
      */
     private static $defaults = array(
         'price' => null,
+        'regular' => null,
         'sale' => null,
         'search' => null,
         'include_drafts' => false,
@@ -70,8 +71,14 @@ class Price_Bulk_Updater_Product_Search {
 
         if (null !== $this->options['price']) {
             array_push($searches, array(
-                'sql' => "(m.meta_key = '_regular_price' AND m.meta_value = '%s')",
+                'sql' => "(m.meta_key = '_price' AND m.meta_value = '%s')",
                 'value' => $this->options['price']
+            ));
+        }
+        if (null !== $this->options['regular']) {
+            array_push($searches, array(
+                'sql' => "(m.meta_key = '_regular_price' AND m.meta_value = '%s')",
+                'value' => $this->options['regular']
             ));
         }
         if (null !== $this->options['sale']) {
@@ -94,7 +101,8 @@ class Price_Bulk_Updater_Product_Search {
         $sql = $wpdb->prepare(
             "
                 SELECT ID, post_title, post_status,
-                (SELECT meta_value FROM wp_postmeta WHERE post_id = p.ID AND meta_key = '_regular_price') AS price,
+                (SELECT meta_value FROM wp_postmeta WHERE post_id = p.ID AND meta_key = '_price') AS price,
+                (SELECT meta_value FROM wp_postmeta WHERE post_id = p.ID AND meta_key = '_regular_price') AS regular,
                 (SELECT meta_value FROM wp_postmeta WHERE post_id = p.ID AND meta_key = '_sale_price') AS sale
                 FROM wp_posts p 
                 INNER JOIN wp_postmeta m

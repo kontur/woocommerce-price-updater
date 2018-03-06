@@ -18,9 +18,11 @@
         $fieldsPrices = $("#woocommerce-price-bulk-updater-prices"),
 
         $inputPrice = $("input[name='price']"),
+        $inputRegular = $("input[name='regular']"),
         $inputSale = $("input[name='sale']"),
         $inputSearch = $("input[name='search']"),
         $inputNewPrice = $("input[name='new_price']"),
+        $inputNewRegular = $("input[name='new_regular']"),
         $inputNewSale = $("input[name='new_sale']"),
 
         $matches = $("#woocommerce-price-bulk-updater-matches"),
@@ -40,7 +42,7 @@
     $fieldsPrices.on("change", "input[type='checkbox']", toggleDisableRow)
 
     // all inputs that take prices undergo formatting
-    $.each([$inputPrice, $inputSale, $inputNewPrice, $inputNewSale], function(index, $input) {
+    $.each([$inputPrice, $inputRegular, $inputSale, $inputNewPrice, $inputNewRegular, $inputNewSale], function(index, $input) {
         $input.on("change keyup", formatNumber)
     })
 
@@ -126,8 +128,9 @@
                     setTotalMatches(result.length)
 
                     $.each(result, function(index, result) {
-                        append += "<li><span>" + result.post_title + "</span> <span>Price: <pre>" +
-                            result.price + "</pre></span> <span>Sales price: <pre>" + result.sale +
+                        append += "<li><span>" + result.post_title + "</span> <span>Current price: <pre>" +
+                            result.price + "</pre></span> <span>Regular price: <pre>" + result.regular +
+                            "</pre></span> <span>Sales price: <pre>" + result.sale +
                             "</pre></span> <span class='" + result.post_status + "'>Status: " +
                             result.post_status + "</span></li>";
                     })
