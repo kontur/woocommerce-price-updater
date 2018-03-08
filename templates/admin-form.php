@@ -41,6 +41,14 @@
 					<input name="search" type="text" disabled>
 					<em>Allowed is alphanumeric input, empty value will be ignored.</em>
 				</div>
+				<div class="woocommerce-price-bulk-updater-row woocommerce-price-bulk-updater-disabled">
+					<label>
+						<input type="checkbox">
+						<span>Product in category</span>
+					</label>
+					<input name="category" type="text" disabled>
+					<em>Allowed is alphanumberic input, empty value will be ignored.</em>
+				</div>
 				<div id="woocommerce-price-bulk-updater-matches-wrapper" class="hidden-initially multiple">
 					<p><code>0</code> matched product<span class="count-mulitple">s</span> will be affected.</p>
 					<div id="woocommerce-price-bulk-updater-matches"></div>
