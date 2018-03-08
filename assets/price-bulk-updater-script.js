@@ -17,6 +17,8 @@
         $fieldsMatch = $("#woocommerce-price-bulk-updater-match"),
         $fieldsPrices = $("#woocommerce-price-bulk-updater-prices"),
 
+        $methodSelect = $("select[name='method']"),
+
         $inputPrice = $("input[name='price']"),
         $inputRegular = $("input[name='regular']"),
         $inputSale = $("input[name='sale']"),
@@ -48,7 +50,7 @@
     })
 
     // perform ajax search for matches
-    $fieldsMatch.on("change keyup", "input", getMatches)
+    $fieldsMatch.on("change keyup", "input, select", getMatches)
 
 
     /**
@@ -97,9 +99,10 @@
         var data = {
             "action": "bulk_price_updater_match_products",
             "nonce": price_bulk_updater.nonce,
+            "method": $methodSelect.val()
         }
 
-        $.each([$inputPrice, $inputSale, $inputSearch, $inputCategory], function(index, $input) {
+        $.each([$inputPrice, $inputRegular, $inputSale, $inputSearch, $inputCategory], function(index, $input) {
             if (!$input.is(":disabled")) {
                 data[$input.attr("name")] = $input.val()
             }
@@ -114,8 +117,6 @@
         if (typeof data.category !== "undefined" && data.category === "") {
             delete data.category
         }
-
-        console.log(data)
 
         $.post(ajaxurl, data, updateMatches)
         checkSubmitAllowed()

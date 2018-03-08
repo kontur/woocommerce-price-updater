@@ -50,9 +50,13 @@ class Price_Bulk_Updater_Product_Search {
     /**
      * Return products matching the current search params
      *
+     * @param boolean $require_one_of optional array of keys of which at
+     *      least one needs to be present
+     * @param boolean $inclusive for deciding if the search is a union
+     *      (true, OR query) or a intersection (false, AND query)
      * @return array
      */
-    public function results($require_one_of = false) {
+    public function results($require_one_of = false, $inclusive = true) {
         global $wpdb;
 
         // optionally require at least one of the params passed in to be set
@@ -72,19 +76,19 @@ class Price_Bulk_Updater_Product_Search {
 
         if (null !== $this->options['price']) {
             array_push($searches, array(
-                'sql' => "(m.meta_key = '_price' AND m.meta_value = '%s')",
+                'sql' => "(price = '%s')",
                 'values' => array($this->options['price'])
             ));
         }
         if (null !== $this->options['regular']) {
             array_push($searches, array(
-                'sql' => "(m.meta_key = '_regular_price' AND m.meta_value = '%s')",
+                'sql' => "(regular = '%s')",
                 'values' => array($this->options['regular'])
             ));
         }
         if (null !== $this->options['sale']) {
             array_push($searches, array(
-                'sql' => "(m.meta_key = '_sale_price' AND m.meta_value = '%s')",
+                'sql' => "(sale = '%s')",
                 'values' => array($this->options['sale'])
             ));
         }
@@ -101,34 +105,49 @@ class Price_Bulk_Updater_Product_Search {
             ));
         }
 
+        $glue = $inclusive ? ' OR ' : ' AND ';
+
         // make the filter a single OR clause addition
-        $filters = empty($searches) ? '1=1' : implode(' OR ', array_map(function ($item) {
+        $filters = empty($searches) ? '1=1' : implode($glue, array_map(function ($item) {
             return $item['sql'];
         }, $searches));
 
-        // this massive query gets a row with the product id, title, status, 
+        // this massive query gets a row with the product id, title, status,
         // prices and category names in one go
+        // the INNER JOIN on temporary tables is neccesary to be able to group
+        // by the post ID while still extracting several joined meta_values
+        // the other INNER JOIN are needed to extract the category names
+
         // TODO test the sub query and join performance on large (1000+) datasets
         $sql = $wpdb->prepare(
             "
                 SELECT ID, post_title, post_status,
-                (SELECT meta_value FROM wp_postmeta WHERE post_id = p.ID AND meta_key = '_price') AS price,
-                (SELECT meta_value FROM wp_postmeta WHERE post_id = p.ID AND meta_key = '_regular_price') AS regular,
-                (SELECT meta_value FROM wp_postmeta WHERE post_id = p.ID AND meta_key = '_sale_price') AS sale,
-                GROUP_CONCAT(DISTINCT t.name SEPARATOR ',') AS categories
+                GROUP_CONCAT(DISTINCT t.name SEPARATOR ',') AS categories, 
+                price, regular, sale
+                FROM $wpdb->posts p
+                
+                INNER JOIN (
+                    SELECT post_id, meta_value AS price FROM $wpdb->postmeta WHERE meta_key = '_price'
+                ) AS price
+                ON price.post_id = p.ID
+                
+                INNER JOIN (
+                    SELECT post_id, meta_value AS regular FROM $wpdb->postmeta WHERE meta_key = '_regular_price'
+                ) AS regular_price
+                ON price.post_id = regular_price.post_id
+                
+                INNER JOIN (
+                    SELECT post_id, meta_value AS sale FROM $wpdb->postmeta WHERE meta_key = '_sale_price'
+                ) AS sale_price	
+                ON price.post_id = sale_price.post_id
 
-                FROM wp_posts p
-
-                INNER JOIN wp_postmeta m
-                ON p.ID = m.post_id
-
-                INNER JOIN wp_term_relationships rel
+                INNER JOIN $wpdb->term_relationships rel
                 ON rel.object_id = p.ID
                     
-                INNER JOIN wp_term_taxonomy tax
+                INNER JOIN $wpdb->term_taxonomy tax
                 ON tax.term_taxonomy_id = rel.term_taxonomy_id
 
-                INNER JOIN wp_terms t
+                INNER JOIN $wpdb->terms t
                 ON t.term_id = tax.term_id
 
                 WHERE p.post_type = 'product' 
