@@ -9,6 +9,13 @@
 		<div id="woocommerce-price-bulk-updater-values">
 			<fieldset id="woocommerce-price-bulk-updater-match">
 				<h2>Match products</h2>
+				<p>Update all products that match
+					<select name="method">
+						<option value="any" selected>ANY</option>
+						<option value="all">ALL</option>
+					</select>
+					of the below criteria:
+				</p>
 				<div class="woocommerce-price-bulk-updater-row woocommerce-price-bulk-updater-disabled">
 					<label>
 						<input type="checkbox">
@@ -50,12 +57,15 @@
 					<em>Allowed is alphanumberic input, empty value will be ignored.</em>
 				</div>
 				<div id="woocommerce-price-bulk-updater-matches-wrapper" class="hidden-initially multiple">
-					<p><code>0</code> matched product<span class="count-mulitple">s</span> will be affected.</p>
+					<p>
+						<code>0</code> matched product
+						<span class="count-mulitple">s</span> will be affected.</p>
 					<div id="woocommerce-price-bulk-updater-matches"></div>
 				</div>
 			</fieldset>
 			<fieldset id="woocommerce-price-bulk-updater-prices">
 				<h2>For matched products</h2>
+				<p>Select what should be updated. Unchecked values remain as they are.</p>
 				<div class="woocommerce-price-bulk-updater-row woocommerce-price-bulk-updater-disabled">
 					<label>
 						<input type="checkbox">
@@ -88,7 +98,7 @@
 			<?php _e("<span>DANGER ZONE:</span> This plugin will bluntly update all matched products' prices. Make sure you have a database backup and proceed with care.", PRICE_BULK_UPDATER_NAMESPACE); ?>
 		</strong>
 
-		<?php submit_button('Update prices', 'primary', 'submit', true, array("disabled" => "disabled")); ?>
+		<?php submit_button('Update prices', 'primary', 'submit', true, array('disabled' => 'disabled')); ?>
 
 	</form>
 </div>
