@@ -14,7 +14,7 @@
 						<input type="checkbox">
 						<span>Current price</span>
 					</label>
-					<input name="current_price" type="text" disabled>
+					<input name="current_price" data-param="price" type="text" disabled>
 					<em>Allowed is numeric input (9 or 9.99) or empty value to match products with no price.</em>
 				</div>
 				<div class="woocommerce-price-bulk-updater-row woocommerce-price-bulk-updater-disabled">
@@ -22,7 +22,7 @@
 						<input type="checkbox">
 						<span>Current sales price</span>
 					</label>
-					<input name="current_sales_price" type="text" disabled>
+					<input name="current_sales_price" data-param="sale" type="text" disabled>
 					<em>Allowed is numeric input (9 or 9.99) or empty value to match products with no sales price.</em>
 				</div>
 				<div class="woocommerce-price-bulk-updater-row woocommerce-price-bulk-updater-disabled">
@@ -30,8 +30,12 @@
 						<input type="checkbox">
 						<span>Product name contains</span>
 					</label>
-					<input name="product_name" type="text" disabled>
+					<input name="product_name" data-param="search" type="text" disabled>
 					<em>Allowed is alphanumeric input, empty value will be ignored.</em>
+				</div>
+				<div id="woocommerce-price-bulk-updater-matches-wrapper" class="multiple">
+					<p><code>0</code> matched product<span class="count-mulitple">s</span> will be affected.</p>
+					<div id="woocommerce-price-bulk-updater-matches"></div>
 				</div>
 			</fieldset>
 			<fieldset id="woocommerce-price-bulk-updater-prices">
@@ -59,7 +63,7 @@
 			<?php _e("DANGER ZONE: This plugin will bluntly update all matched products' prices. Make sure you have a database backup and proceed with care.", PRICE_BULK_UPDATER_NAMESPACE); ?>
 		</strong>
 
-		<?php submit_button('Update prices'); ?>
+		<?php submit_button('Update prices', 'primary', 'submit', true, array("disabled" => "disabled")); ?>
 
 	</form>
 </div>

@@ -3,6 +3,10 @@
     margin: 1rem 0;
 }
 
+#woocommerce-price-bulk-updater #submit[disabled] {
+    background: lightgrey;
+}
+
 #woocommerce-price-bulk-updater-values fieldset {
     border: 1px solid lightgrey;
     display: block;
@@ -14,7 +18,7 @@
     display: block;
 }
 
-#woocommerce-price-bulk-updater-values label>span {
+#woocommerce-price-bulk-updater-values label > span {
     display: inline-block;
     min-width: 10rem;
 }
@@ -35,6 +39,110 @@
 #woocommerce-price-bulk-updater-values input[type="text"][disabled] {
     border: 1px solid lightgrey;
 }
+
 #woocommerce-price-bulk-updater-values input[type="text"] {
     border: 1px solid limegreen;
+}
+
+#woocommerce-price-bulk-updater-matches-wrapper code {
+    background: transparent;
+    font-weight: bold;
+    position: relative;
+    min-width: 10px;
+    display: inline-block;
+}
+
+#woocommerce-price-bulk-updater-matches-wrapper.single > p > span.count-mulitple {
+    display: none;
+}
+
+#woocommerce-price-bulk-updater-matches {
+    border: 2px solid lightgrey;
+    margin: 1em 0;
+    max-width: 60rem;
+    max-height: 7.5rem;
+    overflow-y: scroll;
+    transition: opacity 0.2s ease-out;
+    opacity: 0;
+}
+
+#woocommerce-price-bulk-updater-matches.has-matches {
+    opacity: 1;
+}
+
+#woocommerce-price-bulk-updater-matches ul {
+    list-style-type: disc;
+    font-size: smaller;
+    display: table;
+    margin: 0;
+    width: 100%;
+}
+
+#woocommerce-price-bulk-updater-matches ul li {
+    display: table-row;
+    transition: background 0.2s ease-out;
+}
+
+#woocommerce-price-bulk-updater-matches ul li:nth-of-type(odd) {
+    background: #f9f9f9;
+}
+
+#woocommerce-price-bulk-updater-matches ul li span {
+    display: table-cell;
+    padding: 0.25rem;
+    opacity: 0.5;
+    transition: opacity 0.2s ease-out;
+}
+
+#woocommerce-price-bulk-updater-matches:hover ul li span {
+    opacity: 1;
+}
+
+#woocommerce-price-bulk-updater-matches ul li span.draft {
+    color: orange;
+}
+
+#woocommerce-price-bulk-updater-matches ul li span.trash {
+    color: lightgrey;
+}
+
+#woocommerce-price-bulk-updater-matches ul li span pre {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}
+
+#woocommerce-price-bulk-updater-matches ul li span:first-child {
+    font-weight: bold;
+}
+
+#woocommerce-price-bulk-updater-matches ul li span:last-child {
+    font-style: italic;
+}
+
+#woocommerce-price-bulk-updater-matches-wrapper code.loading:after {
+    background: #444;
+    content: " ";
+    width: 6px;
+    height: 6px;
+    margin: -3px auto 0;
+    border-radius: 100%;
+    animation: roundabout .5s infinite ease-out;
+    position: absolute;
+    left: 25%;
+    top: 25%;
+    z-index: 49;
+    transform-origin: bottom center;
+}
+
+@keyframes roundabout {
+    0% {
+        transform: rotate(0) translateX(0px);
+    }
+    50% {
+        transform: rotate(180deg) translateX(-5px);
+    }
+    100% {
+        transform: rotate(360deg) translateX(0px);
+    }
 }
