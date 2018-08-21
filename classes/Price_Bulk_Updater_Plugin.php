@@ -77,9 +77,10 @@ class Price_Bulk_Updater_Plugin {
                     $params[$param] = trim($_POST[$param]);
                 }
             }
+            $method = isset($_POST['method']) && $_POST['method'] === 'all' ? false : true;
 
             $search = new Price_Bulk_Updater_Product_Search($params);
-            echo json_encode($search->results(self::$required_search_keys));
+            echo json_encode($search->results(self::$required_search_keys, $method));
         }
 
         wp_die();
@@ -139,8 +140,9 @@ class Price_Bulk_Updater_Plugin {
             if (isset($_POST['new_sale'])) {
                 $new['_sale_price'] = trim($_POST['new_sale']);
             }
+            $method = isset($_POST['method']) && $_POST['method'] === 'all' ? false : true;
 
-            $this->update_prices($match, $new);
+            $this->update_prices($match, $new, $method);
         }
 
         // display plugin interface
@@ -152,9 +154,10 @@ class Price_Bulk_Updater_Plugin {
      *
      * @param string $old
      * @param string $new
+     * @param boolean $method
      * @return boolean false on error or int number of changed prices
      */
-    private function update_prices($match, $new) {
+    private function update_prices($match, $new, $method) {
         global $wpdb;
 
         // validate search prices
@@ -191,7 +194,7 @@ class Price_Bulk_Updater_Plugin {
         // Use the same search as the AJAX matcher to retrieve a list of matched products
         // Then perform an update with a WHERE IN (ids...) clause
         $search = new Price_Bulk_Updater_Product_Search($match);
-        $result = $search->results(self::$required_search_keys);
+        $result = $search->results(self::$required_search_keys, $method);
         $updated = array();
 
         if (empty($result)) {
