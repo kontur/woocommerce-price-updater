@@ -16,6 +16,7 @@ define('PRICE_BULK_UPDATER_ADMIN_URL_NAME', 'price-bulk-updater');
 define('PRICE_BULK_UPDATER_ADMIN_URL', 'edit.php?post_type=product&page=' . PRICE_BULK_UPDATER_ADMIN_URL_NAME);
 
 require_once plugin_dir_path(__FILE__) . 'classes/Price_Bulk_Updater.php';
+require_once plugin_dir_path(__FILE__) . 'classes/Price_Bulk_Updater_Product_Search.php';
 $updater = new Price_Bulk_Updater();
 
 register_activation_hook(__FILE__, array('Price_Bulk_Updater', 'hook_activate'));

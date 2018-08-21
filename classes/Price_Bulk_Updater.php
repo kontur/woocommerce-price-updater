@@ -6,6 +6,8 @@
  * admin area
  */
 class Price_Bulk_Updater {
+    private static $price_keys = array('_regular_price', '_sale_price');
+
     public function __construct() {
         add_action('plugins_loaded', array($this, 'hook_plugins_loaded'));
 
@@ -74,11 +76,11 @@ class Price_Bulk_Updater {
                     $params[$param] = trim($_POST[$param]);
                 }
             }
-            
+
             $search = new Price_Bulk_Updater_Product_Search($params);
-            echo json_encode($search->results(array("price", "sale", "search")));
+            echo json_encode($search->results(array('price', 'sale', 'search')));
         }
-        
+
         wp_die();
     }
 
@@ -118,16 +120,28 @@ class Price_Bulk_Updater {
         if (isset($_POST['action']) && $_POST['action'] === 'update') {
             check_admin_referer('price_bulk_updater', 'price_bulk_updater_options');
 
-            $old = trim($_POST['old']);
-            $new = trim($_POST['new']);
+            // since the disabled fields do not get submitted, we can use isset to
+            // check for what to include
+            $match = array();
+            foreach (Price_Bulk_Updater_Product_Search::params() as $param) {
+                if (isset($_POST[$param])) {
+                    $match[$param] = $_POST[$param];
+                }
+            }
 
-            // gather what to update
-            $updater = new Price_Bulk_Updater();
-            $updater->update_prices($old, $new);
+            $new = array();
+            if (isset($_POST['new_price'])) {
+                $new['_regular_price'] = trim($_POST['new_price']);
+            }
+            if (isset($_POST['new_sale'])) {
+                $new['_sale_price'] = trim($_POST['new_sale']);
+            }
+
+            $this->update_prices($match, $new);
         }
 
         // display plugin interface
-        include $this->templates_dir . 'admin-form.php';        
+        include $this->templates_dir . 'admin-form.php';
     }
 
     /**
@@ -137,66 +151,103 @@ class Price_Bulk_Updater {
      * @param string $new
      * @return boolean false on error or int number of changed prices
      */
-    private function update_prices($old, $new) {
+    private function update_prices($match, $new) {
         global $wpdb;
 
-        // Some sanity checks first, return early if input is invalid
-        if ($old === $new) {
-            $this->notice(
-                __('Old and new price are the same, nothing updated', PRICE_BULK_UPDATER_NAMESPACE),
-                'error'
-            );
+        // validate search prices
+        foreach (array('price', 'sale') as $key) {
+            if (isset($match[$key]) && false === $this->validatePriceInput($match[$key])) {
+                $this->notice(
+                    sprintf(
+                        __('Search price "%s" invalid. Allowed are numeric values (9 or 9.99) or leaving empty to match products with no price set. No prices were updated.', PRICE_BULK_UPDATER_NAMESPACE),
+                        $match[$key]
+                    ),
+                    'error'
+                );
 
-            return false;
+                return false;
+            }
         }
 
-        if (false === $this->validatePriceInput($old)) {
-            $this->notice(
-                sprintf(
-                    __('Old price "%s" invalid. Allowed are numeric values (9 or 9.99) or leaving empty to match products with no price set. No prices were updated.', PRICE_BULK_UPDATER_NAMESPACE),
-                    $old
-                ),
-                'error'
-            );
+        // valide new prices
+        foreach (self::$price_keys as $key) {
+            if (isset($new[$key]) && false === $this->validatePriceInput($new[$key])) {
+                $this->notice(
+                    sprintf(
+                        __('New price "%s" invalid. Allowed are numeric values (9 or 9.99) or leaving empty to set the price to empty. No prices were updated.'),
+                        $new[$key]
+                    ),
+                    'error'
+                );
 
-            return false;
-        }
-
-        if (false === $this->validatePriceInput($new)) {
-            $this->notice(
-                __('New price invalid. Allowed are numeric values (9 or 9.99) or leaving empty to set the price to empty. No prices were updated.'),
-                'error'
-            );
-
-            return false;
+                return false;
+            }
         }
 
         // The actual database update
-        $updated = $wpdb->update(
-            $wpdb->prefix . 'postmeta',
-            array('meta_value' => $new),
-            array('meta_value' => $old, 'meta_key' => '_regular_price')
-        );
+        // Use the same search as the AJAX matcher to retrieve a list of matched products
+        // Then perform an update with a WHERE IN (ids...) clause
+        $search = new Price_Bulk_Updater_Product_Search($match);
+        $result = $search->results(array('price', 'sale', 'search'));
+        $updated = array();
+
+        if (empty($result)) {
+            $this->notice(
+                __('No products products matched, nothing updated.', PRICE_BULK_UPDATER_NAMESPACE),
+                'error'
+            );
+            return false;
+        }
+        $ids = array_map(function ($item) {
+            return ($item['ID']);
+        }, $result);
+
+        if (!empty($ids) && is_array($ids)) {
+
+            foreach (self::$price_keys as $meta_key) {
+                if (isset($new[$meta_key])) {
+                    $sql = $wpdb->prepare(
+                        "
+                        UPDATE $wpdb->postmeta
+                        SET meta_value = '%s'
+                        WHERE post_id IN (" . implode(',', $ids) . ")
+                        AND meta_key = '%s'
+                        ",
+                        $new[$meta_key],
+                        $meta_key
+                    );
+                    $updated[$meta_key] = $wpdb->query($sql);
+                }
+            }
+        }
 
         // React to the query result
-        if (!$updated) {
+        if (empty($updated)) {
             $this->notice(
-                __('Old price did not match any products, nothing updated.', PRICE_BULK_UPDATER_NAMESPACE),
+                __('No products product prices changed, nothing updated.', PRICE_BULK_UPDATER_NAMESPACE),
                 'error'
             );
 
             return false;
         } else {
-            $this->notice(
-                sprintf(
-                    __('Updated %d product(s) from old price (%s) to new price (%s).', PRICE_BULK_UPDATER_NAMESPACE),
-                    $updated,
-                    $old,
-                    $new
-                )
-            );
+            foreach (self::$price_keys as $key) {
+                if (isset($updated[$key]) && false !== $updated[$key]) {
+                    $this->notice(
+                        sprintf(
+                            _n('Updated %d product to new %s ("%s").',
+                                'Updated %d products to new %s ("%s").', 
+                                $updated[$key],
+                                PRICE_BULK_UPDATER_NAMESPACE
+                            ),
+                            $updated[$key],
+                            $key === '_regular_price' ? 'price' : 'sales price',
+                            $new[$key]
+                        )
+                    );
+                }
+            }
 
-            return $updated;
+            return true;
         }
     }
 
@@ -207,7 +258,7 @@ class Price_Bulk_Updater {
      * @return boolean
      */
     private static function validatePriceInput($input) {
-        return $input === '' || preg_match('/[^0-9\.]+/', $input) !== 1;
+        return is_string($input) && ( $input === '' || preg_match('/[^0-9\.]+/', $input) !== 1 );
     }
 
     /**
