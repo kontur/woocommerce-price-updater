@@ -33,6 +33,7 @@
 
 #woocommerce-price-bulk-updater-values em {
     color: grey;
+    display: inline-block;
     margin-left: 1rem;
 }
 

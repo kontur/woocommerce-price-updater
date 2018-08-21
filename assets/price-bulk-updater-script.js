@@ -21,6 +21,7 @@
         $inputRegular = $("input[name='regular']"),
         $inputSale = $("input[name='sale']"),
         $inputSearch = $("input[name='search']"),
+        $inputCategory = $("input[name='category']"),
         $inputNewPrice = $("input[name='new_price']"),
         $inputNewRegular = $("input[name='new_regular']"),
         $inputNewSale = $("input[name='new_sale']"),
@@ -98,15 +99,23 @@
             "nonce": price_bulk_updater.nonce,
         }
 
-        $.each([$inputPrice, $inputSale, $inputSearch], function(index, $input) {
+        $.each([$inputPrice, $inputSale, $inputSearch, $inputCategory], function(index, $input) {
             if (!$input.is(":disabled")) {
                 data[$input.attr("name")] = $input.val()
             }
         })
 
+        // delete empty string for active search term
         if (typeof data.search !== "undefined" && data.search === "") {
             delete data.search
         }
+
+        // delete empty string for active category
+        if (typeof data.category !== "undefined" && data.category === "") {
+            delete data.category
+        }
+
+        console.log(data)
 
         $.post(ajaxurl, data, updateMatches)
         checkSubmitAllowed()
@@ -131,6 +140,7 @@
                         append += "<li><span>" + result.post_title + "</span> <span>Current price: <pre>" +
                             result.price + "</pre></span> <span>Regular price: <pre>" + result.regular +
                             "</pre></span> <span>Sales price: <pre>" + result.sale +
+                            "</pre></span> <span>Categories: <pre>" + result.categories +
                             "</pre></span> <span class='" + result.post_status + "'>Status: " +
                             result.post_status + "</span></li>";
                     })

@@ -7,7 +7,7 @@
  */
 class Price_Bulk_Updater_Plugin {
     private static $price_keys = array('_price', '_regular_price', '_sale_price');
-    private static $required_search_keys = array('price', 'regular', 'sale', 'search');
+    private static $required_search_keys = array('price', 'regular', 'sale', 'search', 'category');
 
     public function __construct() {
         add_action('plugins_loaded', array($this, 'hook_plugins_loaded'));
