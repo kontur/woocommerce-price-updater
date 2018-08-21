@@ -1,6 +1,4 @@
 (function($) {
-    console.log("$",$)
-    console.log("jquery", jQuery)
 
     var $element = $("#woocommerce-price-bulk-updater"),
         rowSelector = ".woocommerce-price-bulk-updater-row",
@@ -23,5 +21,15 @@
             $row.addClass(disableClass)
         }
     }
+
+    // $.post(ajaxurl, {
+    //     "action": "bulk_price_updater_match_products",
+    //     "nonce": price_bulk_updater.nonce,
+    //     "price": "19.99",
+    //     "sale": "29.99",
+    //     "search": "thin"
+    // }, function (result) {
+    //     console.log(result)
+    // })
 
 })(jQuery);

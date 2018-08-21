@@ -13,6 +13,8 @@ class Price_Bulk_Updater {
         add_action('admin_init', array($this, 'hook_admin_init'));
         add_action('admin_menu', array($this, 'hook_admin_menu'));
 
+        add_action('wp_ajax_bulk_price_updater_match_products', array($this, 'bulk_price_updater_match_products'));
+
         $this->templates_dir = plugin_dir_path(__FILE__) . '../templates/';
         $this->assets_url = plugins_url('assets/', dirname(__FILE__));
     }
@@ -51,6 +53,33 @@ class Price_Bulk_Updater {
         }
         wp_enqueue_style('price-bulk-updater-styles', $this->assets_url . 'price-bulk-updater-styles.css');
         wp_enqueue_script('price-bulk-updater-script', $this->assets_url . 'price-bulk-updater-script.js', array('jquery'), true, true);
+        wp_localize_script('price-bulk-updater-script', 'price_bulk_updater', array('nonce' => wp_create_nonce('bulk_price_updater_match_products')));
+    }
+
+    /**
+     * Ajax handler for how many products will be affected with the current settings
+     *
+     * @return void
+     */
+    public function bulk_price_updater_match_products() {
+        if (check_ajax_referer('bulk_price_updater_match_products', 'nonce')) {
+            require_once plugin_dir_path(__FILE__) . 'Price_Bulk_Updater_Product_Search.php';
+
+            $params = array();
+            foreach (Price_Bulk_Updater_Product_Search::params() as $param) {
+                // the presence is enough for inclusion, meaning searching for
+                // an "empty" price relies the param being sent, and vice versa
+                // not including "empty" prices requires the param not to be present
+                if (in_array($param, array_keys($_POST))) {
+                    $params[$param] = trim($_POST[$param]);
+                }
+            }
+            
+            $search = new Price_Bulk_Updater_Product_Search(array("foO"));
+            echo json_encode($search->results());
+        }
+        
+        wp_die();
     }
 
     /**
@@ -98,7 +127,7 @@ class Price_Bulk_Updater {
         }
 
         // display plugin interface
-        include $this->templates_dir . 'admin-form.php';
+        include $this->templates_dir . 'admin-form.php';        
     }
 
     /**
