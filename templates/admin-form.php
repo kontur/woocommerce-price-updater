@@ -33,7 +33,7 @@
 					<input name="search" type="text" disabled>
 					<em>Allowed is alphanumeric input, empty value will be ignored.</em>
 				</div>
-				<div id="woocommerce-price-bulk-updater-matches-wrapper" class="multiple">
+				<div id="woocommerce-price-bulk-updater-matches-wrapper" class="hidden-initially multiple">
 					<p><code>0</code> matched product<span class="count-mulitple">s</span> will be affected.</p>
 					<div id="woocommerce-price-bulk-updater-matches"></div>
 				</div>
