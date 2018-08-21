@@ -8,7 +8,7 @@
 
 		<div id="woocommerce-price-bulk-updater-values">
 			<fieldset id="woocommerce-price-bulk-updater-match">
-				<strong>Match products</strong>
+				<h2>Match products</h2>
 				<div class="woocommerce-price-bulk-updater-row woocommerce-price-bulk-updater-disabled">
 					<label>
 						<input type="checkbox">
@@ -39,7 +39,7 @@
 				</div>
 			</fieldset>
 			<fieldset id="woocommerce-price-bulk-updater-prices">
-				<strong>For matched products</strong>
+				<h2>For matched products</h2>
 				<div class="woocommerce-price-bulk-updater-row woocommerce-price-bulk-updater-disabled">
 					<label>
 						<input type="checkbox">
@@ -55,12 +55,13 @@
 					</label>
 					<input name="new_sale" type="text" disabled>
 					<em>Allowed is numeric input (9 or 9.99) or empty value to remove sales prices from matched products.</em>
+					<strong class="woocommerce-price-bulk-updater-input-warning">This will immediately set matched products to be sold at this discounted price.</strong>
 				</div>
 			</fieldset>
 		</div>
 
 		<strong id="woocommerce-price-bulk-updater-warning">
-			<?php _e("DANGER ZONE: This plugin will bluntly update all matched products' prices. Make sure you have a database backup and proceed with care.", PRICE_BULK_UPDATER_NAMESPACE); ?>
+			<?php _e("<span>DANGER ZONE:</span> This plugin will bluntly update all matched products' prices. Make sure you have a database backup and proceed with care.", PRICE_BULK_UPDATER_NAMESPACE); ?>
 		</strong>
 
 		<?php submit_button('Update prices', 'primary', 'submit', true, array("disabled" => "disabled")); ?>

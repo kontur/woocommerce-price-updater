@@ -19,17 +19,25 @@
         $matchesWrapper = $("#woocommerce-price-bulk-updater-matches-wrapper"),
         $submit = $("#submit")
 
+    // on load remove all possibly selected values
+    $element.find("input[type='checkbox']:checked").removeAttr("checked")
+    $element.find("input[type='text']").attr("disabled", "disabled").attr("value", "")
+
+    /**
+     * Register event listeners
+     */
+
     // enable price rows when checkbox clicked
     $fieldsPrices.on("change", "input[type='checkbox']", toggleDisableRow)
 
+    // all inputs that take prices undergo formatting
     $.each([$inputPrice, $inputSale, $inputNewPrice, $inputNewSale], function(index, $input) {
         $input.on("change keyup", formatNumber)
     })
 
-    $element.find("input[type='checkbox']:checked").removeAttr("checked")
-    $element.find("input[type='text']").attr("disabled", "disabled").attr("value", "")
-
+    // perform ajax search for matches
     $fieldsMatch.on("change keyup", "input", getMatches)
+
 
     function toggleDisableRow() {
         var checked = $(this).is(":checked"),
@@ -43,6 +51,7 @@
             $input.attr("disabled", "disabled")
             $row.addClass(disableClass)
         }
+        checkSubmitAllowed()
     }
 
     function getMatches(event) {
@@ -89,7 +98,6 @@
                 if (result && result.length > 0) {
                     var append = "<ul>"
 
-                    $submit.removeAttr("disabled")
                     setTotalMatches(result.length)
 
                     $.each(result, function(index, result) {
@@ -125,6 +133,14 @@
         val = val.replace(/[^\d\.]/gi, "")
 
         $(this).attr("value", val)
+    }
+
+    function checkSubmitAllowed() {
+        if ($fieldsMatch.has("input:checked").length > 0 && $fieldsPrices.has("input:checked").length > 0) {
+            $submit.removeAttr("disabled")
+        } else {
+            $submit.attr("disabled", "disabled")
+        }
     }
 
 })(jQuery)
