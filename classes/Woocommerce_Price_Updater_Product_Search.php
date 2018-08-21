@@ -2,7 +2,7 @@
 /**
  * Searching for WooCommerce products matching certian params
  */
-class Price_Bulk_Updater_Product_Search {
+class Woocommerce_Price_Updater_Product_Search {
     /**
      * Allowed search params and their default values
      *

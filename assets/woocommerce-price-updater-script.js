@@ -7,15 +7,15 @@
      * Declare all recuring variables only once, including $-prefixed jQuery
      * collections
      */
-    var $element = $("#woocommerce-price-bulk-updater"),
+    var $element = $("#woocommerce-price-updater"),
 
-        rowSelector = ".woocommerce-price-bulk-updater-row",
-        disableClass = "woocommerce-price-bulk-updater-disabled",
+        rowSelector = ".woocommerce-price-updater-row",
+        disableClass = "woocommerce-price-updater-disabled",
         matchesClass = "has-matches",
         hiddenClass = "hidden-initially",
 
-        $fieldsMatch = $("#woocommerce-price-bulk-updater-match"),
-        $fieldsPrices = $("#woocommerce-price-bulk-updater-prices"),
+        $fieldsMatch = $("#woocommerce-price-updater-match"),
+        $fieldsPrices = $("#woocommerce-price-updater-prices"),
 
         $methodSelect = $("select[name='method']"),
 
@@ -28,8 +28,8 @@
         $inputNewRegular = $("input[name='new_regular']"),
         $inputNewSale = $("input[name='new_sale']"),
 
-        $matches = $("#woocommerce-price-bulk-updater-matches"),
-        $matchesWrapper = $("#woocommerce-price-bulk-updater-matches-wrapper"),
+        $matches = $("#woocommerce-price-updater-matches"),
+        $matchesWrapper = $("#woocommerce-price-updater-matches-wrapper"),
         $submit = $("#submit")
 
     // on init remove all possibly selected values
@@ -97,8 +97,8 @@
         $submit.attr("disabled", "disabled")
 
         var data = {
-            "action": "bulk_price_updater_match_products",
-            "nonce": price_bulk_updater.nonce,
+            "action": "woocommerce_price_updater_match_products",
+            "nonce": woocommerce_price_updater.nonce,
             "method": $methodSelect.val()
         }
 

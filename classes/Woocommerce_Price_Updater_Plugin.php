@@ -1,11 +1,11 @@
 <?php
 /**
- * Price_Bulk_Updater_Plugin
+ * WooCommerce_Price_Updater_Plugin
  *
  * Main plugin class with hooks for rendering and reacting to changes in the
  * admin area
  */
-class Price_Bulk_Updater_Plugin {
+class Woocommerce_Price_Updater_Plugin {
     private static $price_keys = array('_price', '_regular_price', '_sale_price');
     private static $required_search_keys = array('price', 'regular', 'sale', 'search', 'category');
 
@@ -16,7 +16,7 @@ class Price_Bulk_Updater_Plugin {
         add_action('admin_init', array($this, 'hook_admin_init'));
         add_action('admin_menu', array($this, 'hook_admin_menu'));
 
-        add_action('wp_ajax_bulk_price_updater_match_products', array($this, 'bulk_price_updater_match_products'));
+        add_action('wp_ajax_woocommerce_price_updater_match_products', array($this, 'woocommerce_price_updater_match_products'));
 
         $this->templates_dir = plugin_dir_path(__FILE__) . '../templates/';
         $this->assets_url = plugins_url('assets/', dirname(__FILE__));
@@ -29,7 +29,7 @@ class Price_Bulk_Updater_Plugin {
      */
     public static function hook_activate() {
         // In the options store a message function to call on the next admin init
-        update_option(PRICE_BULK_UPDATER_NAMESPACE . '-notice', 'admin_notice_activate');
+        update_option(WOOCOMMERCE_WOOCOMMERCE_PRICE_UPDATER_NAMESPACE . '-notice', 'admin_notice_activate');
     }
 
     /**
@@ -38,9 +38,9 @@ class Price_Bulk_Updater_Plugin {
      * @return void
      */
     public function hook_admin_init() {
-        if ($notice = get_option(PRICE_BULK_UPDATER_NAMESPACE . '-notice')) {
+        if ($notice = get_option(WOOCOMMERCE_WOOCOMMERCE_PRICE_UPDATER_NAMESPACE . '-notice')) {
             add_action('admin_notices', array($this, $notice));
-            delete_option(PRICE_BULK_UPDATER_NAMESPACE . '-notice');
+            delete_option(WOOCOMMERCE_WOOCOMMERCE_PRICE_UPDATER_NAMESPACE . '-notice');
         }
     }
 
@@ -51,12 +51,12 @@ class Price_Bulk_Updater_Plugin {
      * @return void
      */
     public function hook_admin_enqueue_scripts($hook) {
-        if ($hook !== 'product_page_price-bulk-updater') {
+        if ($hook !== 'product_page_woocommerce-price-updater') {
             return;
         }
-        wp_enqueue_style('price-bulk-updater-styles', $this->assets_url . 'price-bulk-updater-styles.css');
-        wp_enqueue_script('price-bulk-updater-script', $this->assets_url . 'price-bulk-updater-script.js', array('jquery'), true, true);
-        wp_localize_script('price-bulk-updater-script', 'price_bulk_updater', array('nonce' => wp_create_nonce('bulk_price_updater_match_products')));
+        wp_enqueue_style('woocommerce-price-updater-styles', $this->assets_url . 'woocommerce-price-updater-styles.css');
+        wp_enqueue_script('woocommerce-price-updater-script', $this->assets_url . 'woocommerce-price-updater-script.js', array('jquery'), true, true);
+        wp_localize_script('woocommerce-price-updater-script', 'woocommerce_price_updater', array('nonce' => wp_create_nonce('woocommerce_price_updater_match_products')));
     }
 
     /**
@@ -64,12 +64,12 @@ class Price_Bulk_Updater_Plugin {
      *
      * @return void
      */
-    public function bulk_price_updater_match_products() {
-        if (check_ajax_referer('bulk_price_updater_match_products', 'nonce')) {
-            require_once plugin_dir_path(__FILE__) . 'Price_Bulk_Updater_Product_Search.php';
+    public function woocommerce_price_updater_match_products() {
+        if (check_ajax_referer('woocommerce_price_updater_match_products', 'nonce')) {
+            require_once plugin_dir_path(__FILE__) . 'Woocommerce_Price_Updater_Product_Search.php';
 
             $params = array();
-            foreach (Price_Bulk_Updater_Product_Search::params() as $param) {
+            foreach (Woocommerce_Price_Updater_Product_Search::params() as $param) {
                 // the presence is enough for inclusion, meaning searching for
                 // an "empty" price relies the param being sent, and vice versa
                 // not including "empty" prices requires the param not to be present
@@ -79,7 +79,7 @@ class Price_Bulk_Updater_Plugin {
             }
             $method = isset($_POST['method']) && $_POST['method'] === 'all' ? false : true;
 
-            $search = new Price_Bulk_Updater_Product_Search($params);
+            $search = new Woocommerce_Price_Updater_Product_Search($params);
             echo json_encode($search->results(self::$required_search_keys, $method));
         }
 
@@ -100,31 +100,31 @@ class Price_Bulk_Updater_Plugin {
     }
 
     /**
-     * Add the "Price Bulk Updater" submenu to the WooCommerce sidebar menu
+     * Add the "Price Updater" submenu to the WooCommerce sidebar menu
      */
     public function hook_admin_menu() {
         add_submenu_page(
             'edit.php?post_type=product',
-            __('Price Bulk Updater', PRICE_BULK_UPDATER_NAMESPACE),
-            __('Price Bulk Updater', PRICE_BULK_UPDATER_NAMESPACE),
+            __('Price Updater', WOOCOMMERCE_PRICE_UPDATER_NAMESPACE),
+            __('Price Updater', WOOCOMMERCE_PRICE_UPDATER_NAMESPACE),
             'manage_options',
-            PRICE_BULK_UPDATER_ADMIN_URL_NAME,
-            array($this, 'hook_price_bulk_updater_settings_page')
+            WOOCOMMERCE_PRICE_UPDATER_ADMIN_URL_NAME,
+            array($this, 'hook_woocommerce_price_updater_settings_page')
         );
     }
 
     /**
      * Rendering and handling the admin tab
      */
-    public function hook_price_bulk_updater_settings_page() {
+    public function hook_woocommerce_price_updater_settings_page() {
         // handle posted data
         if (isset($_POST['action']) && $_POST['action'] === 'update') {
-            check_admin_referer('price_bulk_updater', 'price_bulk_updater_options');
+            check_admin_referer('woocommerce_price_updater', 'woocommerce_price_updater_options');
 
             // since the disabled fields do not get submitted, we can use isset to
             // check for what to include
             $match = array();
-            foreach (Price_Bulk_Updater_Product_Search::params() as $param) {
+            foreach (Woocommerce_Price_Updater_Product_Search::params() as $param) {
                 if (isset($_POST[$param])) {
                     $match[$param] = $_POST[$param];
                 }
@@ -165,7 +165,7 @@ class Price_Bulk_Updater_Plugin {
             if (isset($match[$key]) && false === $this->validatePriceInput($match[$key])) {
                 $this->notice(
                     sprintf(
-                        __('Search price "%s" invalid. Allowed are numeric values (9 or 9.99) or leaving empty to match products with no price set. No prices were updated.', PRICE_BULK_UPDATER_NAMESPACE),
+                        __('Search price "%s" invalid. Allowed are numeric values (9 or 9.99) or leaving empty to match products with no price set. No prices were updated.', WOOCOMMERCE_PRICE_UPDATER_NAMESPACE),
                         $match[$key]
                     ),
                     'error'
@@ -193,13 +193,13 @@ class Price_Bulk_Updater_Plugin {
         // The actual database update
         // Use the same search as the AJAX matcher to retrieve a list of matched products
         // Then perform an update with a WHERE IN (ids...) clause
-        $search = new Price_Bulk_Updater_Product_Search($match);
+        $search = new Woocommerce_Price_Updater_Product_Search($match);
         $result = $search->results(self::$required_search_keys, $method);
         $updated = array();
 
         if (empty($result)) {
             $this->notice(
-                __('No products matched, nothing updated.', PRICE_BULK_UPDATER_NAMESPACE),
+                __('No products matched, nothing updated.', WOOCOMMERCE_PRICE_UPDATER_NAMESPACE),
                 'error'
             );
 
@@ -230,7 +230,7 @@ class Price_Bulk_Updater_Plugin {
         // React to the query result
         if (empty($updated)) {
             $this->notice(
-                __('No product prices changed, nothing updated.', PRICE_BULK_UPDATER_NAMESPACE),
+                __('No product prices changed, nothing updated.', WOOCOMMERCE_PRICE_UPDATER_NAMESPACE),
                 'warning'
             );
 
@@ -262,7 +262,7 @@ class Price_Bulk_Updater_Plugin {
                                 'Updated %d product to new %s ("%s").',
                                 'Updated %d products to new %s ("%s").',
                                 $updated[$key],
-                                PRICE_BULK_UPDATER_NAMESPACE
+                                WOOCOMMERCE_PRICE_UPDATER_NAMESPACE
                             ),
                             $updated[$key],
                             $which,
@@ -292,7 +292,7 @@ class Price_Bulk_Updater_Plugin {
      * @return void
      */
     public static function admin_notice_activate() {
-        $this->notice(__('WooCommerce Price Bulk Updater is now activated and available under the WooCommerce Products sidebar menu.', PRICE_BULK_UPDATER_NAMESPACE));
+        $this->notice(__('WooCommerce Price Updater is now activated and available under the WooCommerce Products sidebar menu.', WOOCOMMERCE_PRICE_UPDATER_NAMESPACE));
     }
 
     /**
@@ -302,7 +302,7 @@ class Price_Bulk_Updater_Plugin {
      */
     public static function admin_notice_no_woocommerce() {
         $this->notice(
-            __('WooCommerce Price Bulk Updater is activated but WooCommerce does not seem to be installed and activated.', PRICE_BULK_UPDATER_NAMESPACE),
+            __('WooCommerce Price Updater is activated but WooCommerce does not seem to be installed and activated.', WOOCOMMERCE_PRICE_UPDATER_NAMESPACE),
             'warning'
         );
     }

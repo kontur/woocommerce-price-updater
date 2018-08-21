@@ -1,68 +1,76 @@
-#woocommerce-price-bulk-updater-warning {
+#woocommerce-price-updater-warning {
     display: block;
     margin: 1rem 0;
 }
 
-#woocommerce-price-bulk-updater-warning span {
+#woocommerce-price-updater-warning span {
     color: #ee3300;
 }
 
-#woocommerce-price-bulk-updater {
+#woocommerce-price-updater {
     margin-right: 1rem;
 }
 
-#woocommerce-price-bulk-updater #submit[disabled] {
+#woocomerce-price-updater-logo {
+    max-width: 30px;
+    display: inline-block;
+    position: relative;
+    top: 5px;
+    margin-right: 0.25em;
+}
+
+#woocommerce-price-updater #submit[disabled] {
     background: lightgrey;
 }
 
-#woocommerce-price-bulk-updater-values fieldset {
+#woocommerce-price-updater-values fieldset {
     border: 1px solid lightgrey;
     display: block;
     padding: 0.5rem 1rem;
     margin: 1rem 0;
 }
 
-.woocommerce-price-bulk-updater-row {
+.woocommerce-price-updater-row {
     display: block;
 }
 
-#woocommerce-price-bulk-updater-values label > span {
+#woocommerce-price-updater-values label > span {
     display: inline-block;
     min-width: 10rem;
 }
 
-#woocommerce-price-bulk-updater-values em {
+#woocommerce-price-updater-values em {
     color: grey;
     display: inline-block;
     margin-left: 1rem;
 }
 
-#woocommerce-price-bulk-updater-values .woocommerce-price-bulk-updater-disabled em {
+#woocommerce-price-updater-values .woocommerce-price-updater-disabled em {
     color: lightgrey;
 }
 
-.woocommerce-price-bulk-updater-disabled span {
+.woocommerce-price-updater-disabled span {
     color: grey;
 }
 
-#woocommerce-price-bulk-updater-values input[type="text"][disabled] {
+#woocommerce-price-updater-values input[type="text"][disabled] {
     border: 1px solid lightgrey;
 }
 
-#woocommerce-price-bulk-updater-values input[type="text"] {
+#woocommerce-price-updater-values input[type="text"] {
     border: 1px solid limegreen;
 }
 
-#woocommerce-price-bulk-updater-matches-wrapper {
+#woocommerce-price-updater-matches-wrapper {
     transition: opacity 0.2s ease-out;
     opacity: 1;
 }
 
-#woocommerce-price-bulk-updater-matches-wrapper.hidden-initially {
+#woocommerce-price-updater-matches-wrapper.hidden-initially {
     opacity: 0;
 }
 
-#woocommerce-price-bulk-updater-matches-wrapper code {
+#woocommerce-price-updater-matches-wrapper code {
     background: transparent;
     font-weight: bold;
     position: relative;
@@ -70,11 +78,11 @@
     display: inline-block;
 }
 
-#woocommerce-price-bulk-updater-matches-wrapper.single > p > span.count-mulitple {
+#woocommerce-price-updater-matches-wrapper.single > p > span.count-mulitple {
     display: none;
 }
 
-#woocommerce-price-bulk-updater-matches {
+#woocommerce-price-updater-matches {
     border: 2px solid lightgrey;
     margin: 1em 0;
     max-width: 60rem;
@@ -84,11 +92,11 @@
     opacity: 0;
 }
 
-#woocommerce-price-bulk-updater-matches.has-matches {
+#woocommerce-price-updater-matches.has-matches {
     opacity: 1;
 }
 
-#woocommerce-price-bulk-updater-matches ul {
+#woocommerce-price-updater-matches ul {
     list-style-type: disc;
     font-size: smaller;
     display: table;
@@ -96,49 +104,49 @@
     width: 100%;
 }
 
-#woocommerce-price-bulk-updater-matches ul li {
+#woocommerce-price-updater-matches ul li {
     display: table-row;
     transition: background 0.2s ease-out;
 }
 
-#woocommerce-price-bulk-updater-matches ul li:nth-of-type(odd) {
+#woocommerce-price-updater-matches ul li:nth-of-type(odd) {
     background: #f9f9f9;
 }
 
-#woocommerce-price-bulk-updater-matches ul li span {
+#woocommerce-price-updater-matches ul li span {
     display: table-cell;
     padding: 0.25rem;
     opacity: 0.5;
     transition: opacity 0.2s ease-out;
 }
 
-#woocommerce-price-bulk-updater-matches:hover ul li span {
+#woocommerce-price-updater-matches:hover ul li span {
     opacity: 1;
 }
 
-#woocommerce-price-bulk-updater-matches ul li span.draft {
+#woocommerce-price-updater-matches ul li span.draft {
     color: orange;
 }
 
-#woocommerce-price-bulk-updater-matches ul li span.trash {
+#woocommerce-price-updater-matches ul li span.trash {
     color: lightgrey;
 }
 
-#woocommerce-price-bulk-updater-matches ul li span pre {
+#woocommerce-price-updater-matches ul li span pre {
     display: inline-block;
     padding: 0;
     margin: 0;
 }
 
-#woocommerce-price-bulk-updater-matches ul li span:first-child {
+#woocommerce-price-updater-matches ul li span:first-child {
     font-weight: bold;
 }
 
-#woocommerce-price-bulk-updater-matches ul li span:last-child {
+#woocommerce-price-updater-matches ul li span:last-child {
     font-style: italic;
 }
 
-#woocommerce-price-bulk-updater-matches-wrapper code.loading:after {
+#woocommerce-price-updater-matches-wrapper code.loading:after {
     background: #444;
     content: " ";
     width: 6px;
@@ -165,12 +173,22 @@
     }
 }
 
-.woocommerce-price-bulk-updater-input-warning {
+.woocommerce-price-updater-input-warning {
     color: #ee3300;
     display: block;
     margin-left: 1.5rem;
 }
 
-.woocommerce-price-bulk-updater-disabled .woocommerce-price-bulk-updater-input-warning {
+.woocommerce-price-updater-disabled .woocommerce-price-updater-input-warning {
     display: none;
+}
+
+#woocommerce-price-updater-donate div {
+    display: inline-block;
+}
+
+#woocommerce-price-updater-donate form {
+    display: inline-block;
+    position: relative;
+    top: 1em;
 }
