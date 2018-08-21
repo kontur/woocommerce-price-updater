@@ -12,9 +12,17 @@
 				<div class="woocommerce-price-bulk-updater-row woocommerce-price-bulk-updater-disabled">
 					<label>
 						<input type="checkbox">
-						<span>Current price</span>
+						<span>Current active price</span>
 					</label>
 					<input name="price" type="text" disabled>
+					<em>Allowed is numeric input (9 or 9.99) or empty value to match products with no price.</em>
+				</div>
+				<div class="woocommerce-price-bulk-updater-row woocommerce-price-bulk-updater-disabled">
+					<label>
+						<input type="checkbox">
+						<span>Current regular price</span>
+					</label>
+					<input name="regular" type="text" disabled>
 					<em>Allowed is numeric input (9 or 9.99) or empty value to match products with no price.</em>
 				</div>
 				<div class="woocommerce-price-bulk-updater-row woocommerce-price-bulk-updater-disabled">
@@ -43,9 +51,17 @@
 				<div class="woocommerce-price-bulk-updater-row woocommerce-price-bulk-updater-disabled">
 					<label>
 						<input type="checkbox">
-						<span>Set price</span>
+						<span>Set current price</span>
 					</label>
 					<input name="new_price" type="text" disabled>
+					<em>Allowed is numeric input (9 or 9.99) or empty value to remove prices from matched products.</em>
+				</div>
+				<div class="woocommerce-price-bulk-updater-row woocommerce-price-bulk-updater-disabled">
+					<label>
+						<input type="checkbox">
+						<span>Set regular price</span>
+					</label>
+					<input name="new_regular" type="text" disabled>
 					<em>Allowed is numeric input (9 or 9.99) or empty value to remove prices from matched products.</em>
 				</div>
 				<div class="woocommerce-price-bulk-updater-row woocommerce-price-bulk-updater-disabled">

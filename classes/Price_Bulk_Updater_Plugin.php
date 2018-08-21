@@ -6,7 +6,8 @@
  * admin area
  */
 class Price_Bulk_Updater_Plugin {
-    private static $price_keys = array('_regular_price', '_sale_price');
+    private static $price_keys = array('_price', '_regular_price', '_sale_price');
+    private static $required_search_keys = array('price', 'regular', 'sale', 'search');
 
     public function __construct() {
         add_action('plugins_loaded', array($this, 'hook_plugins_loaded'));
@@ -78,7 +79,7 @@ class Price_Bulk_Updater_Plugin {
             }
 
             $search = new Price_Bulk_Updater_Product_Search($params);
-            echo json_encode($search->results(array('price', 'sale', 'search')));
+            echo json_encode($search->results(self::$required_search_keys));
         }
 
         wp_die();
@@ -130,7 +131,10 @@ class Price_Bulk_Updater_Plugin {
 
             $new = array();
             if (isset($_POST['new_price'])) {
-                $new['_regular_price'] = trim($_POST['new_price']);
+                $new['_price'] = trim($_POST['new_price']);
+            }
+            if (isset($_POST['new_regular'])) {
+                $new['_regular_price'] = trim($_POST['new_regular']);
             }
             if (isset($_POST['new_sale'])) {
                 $new['_sale_price'] = trim($_POST['new_sale']);
@@ -154,7 +158,7 @@ class Price_Bulk_Updater_Plugin {
         global $wpdb;
 
         // validate search prices
-        foreach (array('price', 'sale') as $key) {
+        foreach (array('price', 'regular', 'sale') as $key) {
             if (isset($match[$key]) && false === $this->validatePriceInput($match[$key])) {
                 $this->notice(
                     sprintf(
@@ -187,12 +191,12 @@ class Price_Bulk_Updater_Plugin {
         // Use the same search as the AJAX matcher to retrieve a list of matched products
         // Then perform an update with a WHERE IN (ids...) clause
         $search = new Price_Bulk_Updater_Product_Search($match);
-        $result = $search->results(array('price', 'sale', 'search'));
+        $result = $search->results(self::$required_search_keys);
         $updated = array();
 
         if (empty($result)) {
             $this->notice(
-                __('No products products matched, nothing updated.', PRICE_BULK_UPDATER_NAMESPACE),
+                __('No products matched, nothing updated.', PRICE_BULK_UPDATER_NAMESPACE),
                 'error'
             );
 
@@ -223,14 +227,32 @@ class Price_Bulk_Updater_Plugin {
         // React to the query result
         if (empty($updated)) {
             $this->notice(
-                __('No products product prices changed, nothing updated.', PRICE_BULK_UPDATER_NAMESPACE),
-                'error'
+                __('No product prices changed, nothing updated.', PRICE_BULK_UPDATER_NAMESPACE),
+                'warning'
             );
 
             return false;
         } else {
             foreach (self::$price_keys as $key) {
                 if (isset($updated[$key]) && false !== $updated[$key]) {
+                    switch ($key) {
+                        case '_price':
+                            $which = 'current price';
+                            break;
+
+                        case '_regular_price':
+                            $which = 'regular price';
+                            break;
+
+                        case '_sale_price':
+                            $which = 'sales price';
+                            break;
+
+                        default:
+                            $which = 'current price';
+                            break;
+                    }
+
                     $this->notice(
                         sprintf(
                             _n(
@@ -240,7 +262,7 @@ class Price_Bulk_Updater_Plugin {
                                 PRICE_BULK_UPDATER_NAMESPACE
                             ),
                             $updated[$key],
-                            $key === '_regular_price' ? 'price' : 'sales price',
+                            $which,
                             $new[$key]
                         )
                     );
@@ -270,6 +292,11 @@ class Price_Bulk_Updater_Plugin {
         $this->notice(__('WooCommerce Price Bulk Updater is now activated and available under the WooCommerce Products sidebar menu.', PRICE_BULK_UPDATER_NAMESPACE));
     }
 
+    /**
+     * Callback to display warning when no WooCommerce is detected
+     *
+     * @return void
+     */
     public static function admin_notice_no_woocommerce() {
         $this->notice(
             __('WooCommerce Price Bulk Updater is activated but WooCommerce does not seem to be installed and activated.', PRICE_BULK_UPDATER_NAMESPACE),
