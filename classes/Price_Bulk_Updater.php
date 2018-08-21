@@ -266,7 +266,7 @@ class Price_Bulk_Updater {
      *
      * @return void
      */
-    private static function admin_notice_activate() {
+    public static function admin_notice_activate() {
         $this->notice(__('WooCommerce Price Bulk Updater is now activated and available under the Products sidebar menu.', PRICE_BULK_UPDATER_NAMESPACE));
     }
 
