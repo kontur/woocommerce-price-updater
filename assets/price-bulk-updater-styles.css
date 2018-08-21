@@ -1,0 +1,9 @@
+#woocommerce-price-bulk-updater {}
+#woocommerce-price-bulk-updater-values {}
+#woocommerce-price-bulk-updater-values fieldset {
+    display: inline-block;
+}
+#woocommerce-price-bulk-updater-warning {
+    display: block;
+    margin: 1rem 0;
+}
