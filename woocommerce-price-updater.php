@@ -4,7 +4,7 @@
  * Plugin URI:		https://wordpress.org/plugins/woo-price-updater
  * Description:		A simple Wordpress WooCommerce plugin to set or replace WooCommerce prices in bulk
  * Version:     	0.1.0
- * WC Tested Up To: 3.4.4
+ * WC Tested Up To: 3.5.1
  * Author:      	Underscore
  * Author URI:  	https://underscoretype.com
  * Copyright:   	Copyright 2018 Johannes 'kontur' Neumeier
